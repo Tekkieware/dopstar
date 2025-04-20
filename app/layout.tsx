@@ -6,10 +6,10 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Docker Arrange - Learn Docker by Arranging Files",
-  description: "A game to learn Docker by arranging Dockerfile and docker-compose.yml files",
-    generator: 'v0.dev'
+  title: "D'opstar - Test Your DevOps Knowledge in a Fun-Filled Way",
+  description: "Dive into D'opstar, the ultimate DevOps-themed game that challenges your skills through engaging scenarios and fast-paced challenges. Perfect for engineers who love learning through play!",
 }
+
 
 export default function RootLayout({
   children,

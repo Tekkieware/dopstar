@@ -10,9 +10,9 @@ import ThemeToggle from "@/components/theme-toggle"
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground overflow-hidden transition-theme">
-      {/* Background elements */}
+
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Orbital visualization in background */}
+
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50">
           <OrbitalVisualization />
         </div>
@@ -27,7 +27,7 @@ export default function LandingPage() {
           style={{ animationDelay: "2s" }}
         />
 
-        {/* Grid lines */}
+
         <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem]" />
       </div>
 
@@ -133,7 +133,7 @@ export default function LandingPage() {
         <p>© {new Date().getFullYear()} d'Opstar • A DevOps Learning Game</p>
       </footer>
 
-      {/* Animated code blocks in background */}
+
       <CodeBlock
         code={`version: '3'
 services:
