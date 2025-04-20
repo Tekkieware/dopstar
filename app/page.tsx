@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Container, Database, Layers, Server, Terminal, Trophy } from "lucide-react"
+import { Container, Database, Layers, Play, Server, Terminal, Trophy } from "lucide-react"
 import { AnimatedCard } from "@/components/animated-card"
 import { CodeBlock } from "@/components/code-block"
 import { OrbitalVisualization } from "@/components/orbital-visualization"
@@ -9,7 +9,7 @@ import ThemeToggle from "@/components/theme-toggle"
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground overflow-hidden transition-theme">
+    <div className="flex flex-col min-h-screen text-foreground overflow-hidden transition-theme">
 
       <div className="absolute inset-0 z-0 overflow-hidden">
 
@@ -34,15 +34,20 @@ export default function LandingPage() {
       <header className="relative z-10 flex items-center justify-between p-6">
         <div className="flex items-center gap-2 group">
           <Container className="h-6 w-6 text-primary group-hover:rotate-12 transition-transform duration-300" />
-          <span className="font-mono text-xl font-bold tracking-tight relative">
-            d'Opstar
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
-          </span>
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+          >
+            <span className="font-mono text-xl font-bold tracking-tight relative">
+              d'Opstar
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+            </span>
+          </Link>
         </div>
         <nav className="flex items-center gap-6">
           <Link href="/game" className="relative group flex items-center gap-1 px-3 py-1.5 overflow-hidden">
             <span className="absolute inset-0 w-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full transition-all duration-300 group-hover:w-full"></span>
-            <Terminal className="h-4 w-4 text-primary group-hover:text-primary group-hover:rotate-12 transition-all duration-300" />
+            <Play className="h-4 w-4 text-primary group-hover:text-primary group-hover:rotate-12 transition-all duration-300" />
             <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300 relative z-10">
               Play
             </span>
@@ -103,7 +108,7 @@ export default function LandingPage() {
         </div>
 
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl">
-          <AnimatedCard className="bg-card/50 backdrop-blur-sm p-6 rounded-xl border border-border" delay={0.1}>
+          <AnimatedCard className="border-gray-200 dark:border-gray-700 backdrop-blur-sm p-6 rounded-xl border border-border" delay={0.1}>
             <Layers className="h-8 w-8 text-primary mb-4" />
             <h3 className="text-xl font-bold mb-2">Docker Mastery</h3>
             <p className="text-muted-foreground">
@@ -111,7 +116,7 @@ export default function LandingPage() {
             </p>
           </AnimatedCard>
 
-          <AnimatedCard className="bg-card/50 backdrop-blur-sm p-6 rounded-xl border border-border" delay={0.3}>
+          <AnimatedCard className="border-gray-200 dark:border-gray-700 backdrop-blur-sm p-6 rounded-xl border border-border" delay={0.3}>
             <Container className="h-8 w-8 text-primary mb-4" />
             <h3 className="text-xl font-bold mb-2">Compose Challenge</h3>
             <p className="text-muted-foreground">
@@ -119,7 +124,7 @@ export default function LandingPage() {
             </p>
           </AnimatedCard>
 
-          <AnimatedCard className="bg-card/50 backdrop-blur-sm p-6 rounded-xl border border-border" delay={0.5}>
+          <AnimatedCard className="border-gray-200 dark:border-gray-700 backdrop-blur-sm p-6 rounded-xl border border-border" delay={0.5}>
             <Server className="h-8 w-8 text-primary mb-4" />
             <h3 className="text-xl font-bold mb-2">K8s Puzzles</h3>
             <p className="text-muted-foreground">
@@ -145,7 +150,7 @@ services:
     image: postgres
     volumes:
       - data:/var/lib/postgresql`}
-        className="absolute bottom-10 left-10 opacity-20 text-primary hidden lg:block"
+        className="absolute bottom-10 left-10 opacity-20 text-primary dark:text-gray-200 hidden lg:block"
         delay={1000}
       />
 
@@ -159,7 +164,7 @@ spec:
   selector:
     matchLabels:
       app: web`}
-        className="absolute top-20 right-10 opacity-20 text-primary/80 hidden lg:block"
+        className="absolute top-20 right-10 opacity-20 text-primary/80 dark:text-gray-200 hidden lg:block"
         delay={2000}
       />
     </div>
