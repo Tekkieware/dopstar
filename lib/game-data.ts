@@ -91,4 +91,1186 @@ export const stages = [
       '      - "80:80"',
     ],
   },
+  {
+    type: "Dockerfile",
+    description: "Fix the Dockerfile for a Python Flask app",
+    lines: [
+      "RUN pip install -r requirements.txt",
+      "CMD [\"python\", \"app.py\"]",
+      "COPY . .",
+      "WORKDIR /app",
+      "EXPOSE 5000",
+      "FROM python:3.10-slim",
+      "COPY requirements.txt ./",
+    ],
+    solution: [
+      "FROM python:3.10-slim",
+      "WORKDIR /app",
+      "COPY requirements.txt ./",
+      "RUN pip install -r requirements.txt",
+      "COPY . .",
+      "EXPOSE 5000",
+      "CMD [\"python\", \"app.py\"]",
+    ],
+  },
+
+  {
+    type: "docker-compose.yml",
+    description: "Arrange services with mounted volumes for development",
+    lines: [
+      "version: '3'",
+      "services:",
+      "  app:",
+      "    volumes:",
+      "      - .:/usr/src/app",
+      "    ports:",
+      "      - '3000:3000'",
+      "    image: node:18",
+      "    working_dir: /usr/src/app",
+      "    command: npm run dev",
+    ],
+    solution: [
+      "version: '3'",
+      "services:",
+      "  app:",
+      "    image: node:18",
+      "    working_dir: /usr/src/app",
+      "    volumes:",
+      "      - .:/usr/src/app",
+      "    ports:",
+      "      - '3000:3000'",
+      "    command: npm run dev",
+    ],
+  },
+
+  {
+    type: "kubernetes.yaml",
+    description: "Rearrange a simple Deployment for a Node.js app",
+    lines: [
+      "      containers:",
+      "    spec:",
+      "        - name: node-app",
+      "          image: node:18",
+      "          ports:",
+      "            - containerPort: 3000",
+      "  template:",
+      "  replicas: 2",
+      "  selector:",
+      "    matchLabels:",
+      "      app: node-app",
+      "apiVersion: apps/v1",
+      "kind: Deployment",
+      "metadata:",
+      "  name: node-deployment",
+      "    labels:",
+      "      app: node-app",
+      "  spec:",
+    ],
+    solution: [
+      "apiVersion: apps/v1",
+      "kind: Deployment",
+      "metadata:",
+      "  name: node-deployment",
+      "spec:",
+      "  replicas: 2",
+      "  selector:",
+      "    matchLabels:",
+      "      app: node-app",
+      "  template:",
+      "    metadata:",
+      "      labels:",
+      "        app: node-app",
+      "    spec:",
+      "      containers:",
+      "        - name: node-app",
+      "          image: node:18",
+      "          ports:",
+      "            - containerPort: 3000",
+    ],
+  },
+
+  {
+    type: "Dockerfile",
+    description: "Include ARG and ENV to configure app port",
+    lines: [
+      "CMD [\"node\", \"server.js\"]",
+      "ARG PORT=3000",
+      "EXPOSE ${PORT}",
+      "FROM node:18-alpine",
+      "WORKDIR /app",
+      "ENV PORT=${PORT}",
+      "COPY . .",
+      "RUN npm install",
+    ],
+    solution: [
+      "FROM node:18-alpine",
+      "ARG PORT=3000",
+      "ENV PORT=${PORT}",
+      "WORKDIR /app",
+      "COPY . .",
+      "RUN npm install",
+      "EXPOSE ${PORT}",
+      "CMD [\"node\", \"server.js\"]",
+    ],
+  },
+  {
+    type: "docker-compose.yml",
+    description: "Add environment variables using .env file",
+    lines: [
+      "version: '3.8'",
+      "services:",
+      "  app:",
+      "    build: .",
+      "    ports:",
+      "      - '${PORT}:3000'",
+      "    env_file:",
+      "      - .env",
+      "  redis:",
+      "    image: redis",
+    ],
+    solution: [
+      "version: '3.8'",
+      "services:",
+      "  app:",
+      "    build: .",
+      "    env_file:",
+      "      - .env",
+      "    ports:",
+      "      - '${PORT}:3000'",
+      "  redis:",
+      "    image: redis",
+    ],
+  },
+
+  {
+    type: "kubernetes.yaml",
+    description: "Arrange a Service for a deployment",
+    lines: [
+      "kind: Service",
+      "metadata:",
+      "  name: node-service",
+      "spec:",
+      "  ports:",
+      "    - port: 80",
+      "      targetPort: 3000",
+      "  selector:",
+      "    app: node-app",
+      "apiVersion: v1",
+    ],
+    solution: [
+      "apiVersion: v1",
+      "kind: Service",
+      "metadata:",
+      "  name: node-service",
+      "spec:",
+      "  selector:",
+      "    app: node-app",
+      "  ports:",
+      "    - port: 80",
+      "      targetPort: 3000",
+    ],
+  },
+
+  {
+    type: "Dockerfile",
+    description: "Add a non-root user to your Dockerfile",
+    lines: [
+      "COPY . .",
+      "RUN npm install",
+      "FROM node:18",
+      "CMD [\"node\", \"server.js\"]",
+      "RUN adduser --disabled-password appuser",
+      "USER appuser",
+      "WORKDIR /app",
+    ],
+    solution: [
+      "FROM node:18",
+      "RUN adduser --disabled-password appuser",
+      "USER appuser",
+      "WORKDIR /app",
+      "COPY . .",
+      "RUN npm install",
+      "CMD [\"node\", \"server.js\"]",
+    ],
+  },
+
+  {
+    type: "kubernetes.yaml",
+    description: "Define an Ingress to expose your service",
+    lines: [
+      "  name: example-ingress",
+      "apiVersion: networking.k8s.io/v1",
+      "metadata:",
+      "spec:",
+      "  rules:",
+      "  - host: example.com",
+      "    http:",
+      "      paths:",
+      "      - path: /",
+      "        pathType: Prefix",
+      "        backend:",
+      "          service:",
+      "            name: node-service",
+      "            port:",
+      "              number: 80",
+      "kind: Ingress",
+    ],
+    solution: [
+      "apiVersion: networking.k8s.io/v1",
+      "kind: Ingress",
+      "metadata:",
+      "  name: example-ingress",
+      "spec:",
+      "  rules:",
+      "  - host: example.com",
+      "    http:",
+      "      paths:",
+      "      - path: /",
+      "        pathType: Prefix",
+      "        backend:",
+      "          service:",
+      "            name: node-service",
+      "            port:",
+      "              number: 80",
+    ],
+  },
+
+  {
+    type: "docker-compose.yml",
+    description: "Ensure service dependencies using depends_on",
+    lines: [
+      "version: '3.7'",
+      "services:",
+      "  db:",
+      "    image: postgres",
+      "  backend:",
+      "    build: ./backend",
+      "    depends_on:",
+      "      - db",
+      "  frontend:",
+      "    build: ./frontend",
+      "    depends_on:",
+      "      - backend",
+    ],
+    solution: [
+      "version: '3.7'",
+      "services:",
+      "  db:",
+      "    image: postgres",
+      "  backend:",
+      "    build: ./backend",
+      "    depends_on:",
+      "      - db",
+      "  frontend:",
+      "    build: ./frontend",
+      "    depends_on:",
+      "      - backend",
+    ],
+  },
+
+  {
+    type: "Dockerfile",
+    description: "Optimize a production React Dockerfile",
+    lines: [
+      "COPY . .",
+      "RUN npm run build",
+      "FROM nginx:alpine",
+      "WORKDIR /app",
+      "COPY --from=builder /app/build /usr/share/nginx/html",
+      "FROM node:18 as builder",
+      "COPY package*.json ./",
+      "RUN npm install",
+    ],
+    solution: [
+      "FROM node:18 as builder",
+      "WORKDIR /app",
+      "COPY package*.json ./",
+      "RUN npm install",
+      "COPY . .",
+      "RUN npm run build",
+      "FROM nginx:alpine",
+      "COPY --from=builder /app/build /usr/share/nginx/html",
+    ],
+  },
+
+  {
+    type: "kubernetes.yaml",
+    description: "Create a ConfigMap for environment variables",
+    lines: [
+      "apiVersion: v1",
+      "kind: ConfigMap",
+      "metadata:",
+      "  name: app-config",
+      "data:",
+      "  NODE_ENV: production",
+      "  PORT: '3000'",
+    ],
+    solution: [
+      "apiVersion: v1",
+      "kind: ConfigMap",
+      "metadata:",
+      "  name: app-config",
+      "data:",
+      "  NODE_ENV: production",
+      "  PORT: '3000'",
+    ],
+  },
+
+  {
+    type: "Dockerfile",
+    description: "Add a HEALTHCHECK to a Node.js Dockerfile",
+    lines: [
+      "WORKDIR /app",
+      "CMD [\"npm\", \"start\"]",
+      "FROM node:18",
+      "COPY . .",
+      "HEALTHCHECK CMD curl --fail http://localhost:3000/health || exit 1",
+      "RUN npm install",
+    ],
+    solution: [
+      "FROM node:18",
+      "WORKDIR /app",
+      "COPY . .",
+      "RUN npm install",
+      "HEALTHCHECK CMD curl --fail http://localhost:3000/health || exit 1",
+      "CMD [\"npm\", \"start\"]",
+    ],
+  },
+  {
+    type: "kubernetes.yaml",
+    description: "Create a Kubernetes Secret for DB credentials",
+    lines: [
+      "apiVersion: v1",
+      "kind: Secret",
+      "metadata:",
+      "  name: db-secret",
+      "type: Opaque",
+      "data:",
+      "  username: dXNlcg==",
+      "  password: cGFzc3dvcmQ=",
+    ],
+    solution: [
+      "apiVersion: v1",
+      "kind: Secret",
+      "metadata:",
+      "  name: db-secret",
+      "type: Opaque",
+      "data:",
+      "  username: dXNlcg==",
+      "  password: cGFzc3dvcmQ=",
+    ],
+  },
+  {
+    type: "Dockerfile",
+    description: "Use multi-stage build for a Go app",
+    lines: [
+      "COPY --from=builder /app/main /app/main",
+      "CMD [\"/app/main\"]",
+      "WORKDIR /app",
+      "FROM golang:1.19 as builder",
+      "RUN go build -o main .",
+      "COPY . .",
+      "FROM alpine",
+    ],
+    solution: [
+      "FROM golang:1.19 as builder",
+      "WORKDIR /app",
+      "COPY . .",
+      "RUN go build -o main .",
+      "FROM alpine",
+      "COPY --from=builder /app/main /app/main",
+      "CMD [\"/app/main\"]",
+    ],
+  },
+  {
+    type: "docker-compose.yml",
+    description: "Define custom network and connect services",
+    lines: [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    networks:",
+      "      - mynet",
+      "  db:",
+      "    image: postgres",
+      "    networks:",
+      "      - mynet",
+      "networks:",
+      "  mynet:",
+        "    driver: bridge",
+    ],
+    solution: [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    networks:",
+      "      - mynet",
+      "  db:",
+      "    image: postgres",
+      "    networks:",
+      "      - mynet",
+      "networks:",
+      "  mynet:",
+      "    driver: bridge",
+    ],
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Define and mount a volume for the app service",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    volumes:",
+      "      - ./app-data:/app-data"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    volumes:",
+      "      - ./app-data:/app-data"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Define environment variables for the app service",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - NODE_ENV=production"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - NODE_ENV=production"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Link app service with a database using environment variables",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - DB_HOST=db",
+      "      - DB_PORT=5432",
+      "  db:",
+      "    image: postgres"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - DB_HOST=db",
+      "      - DB_PORT=5432",
+      "  db:",
+      "    image: postgres"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Create a multi-stage build for a Node.js app with an optimized image",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    build:",
+      "      context: ./app",
+      "      dockerfile: Dockerfile.prod"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    build:",
+      "      context: ./app",
+      "      dockerfile: Dockerfile.prod"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Configure the app service to restart on failure",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    restart: on-failure"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    restart: on-failure"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Expose ports for both app and database services",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    ports:",
+      "      - '8080:8080'",
+      "  db:",
+      "    image: postgres",
+      "    ports:",
+      "      - '5432:5432'"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    ports:",
+      "      - '8080:8080'",
+      "  db:",
+      "    image: postgres",
+      "    ports:",
+      "      - '5432:5432'"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Add a custom network and attach services to it",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    networks:",
+      "      - my-network",
+      "  db:",
+      "    image: postgres",
+      "    networks:",
+      "      - my-network",
+      "networks:",
+      "  my-network:"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    networks:",
+      "      - my-network",
+      "  db:",
+      "    image: postgres",
+      "    networks:",
+      "      - my-network",
+      "networks:",
+      "  my-network:"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Scale the app service to 3 replicas",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    deploy:",
+      "      replicas: 3"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    deploy:",
+      "      replicas: 3"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Configure service dependencies for app and db",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    depends_on:",
+      "      - db",
+      "  db:",
+      "    image: postgres"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    depends_on:",
+      "      - db",
+      "  db:",
+      "    image: postgres"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Use a multi-service environment and configure external links",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    external_links:",
+      "      - db:external-db",
+      "  db:",
+      "    image: postgres"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    external_links:",
+      "      - db:external-db",
+      "  db:",
+      "    image: postgres"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Use a `.env` file to define environment variables for services",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    env_file: .env",
+      "  db:",
+      "    image: postgres"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    env_file: .env",
+      "  db:",
+      "    image: postgres"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Enable service health checks for app and db",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    healthcheck:",
+      "      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']",
+      "      interval: 30s",
+      "      retries: 3",
+      "  db:",
+      "    image: postgres",
+      "    healthcheck:",
+      "      test: ['CMD', 'pg_isready', '-U', 'postgres']",
+      "      interval: 30s",
+      "      retries: 3"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    healthcheck:",
+      "      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']",
+      "      interval: 30s",
+      "      retries: 3",
+      "  db:",
+      "    image: postgres",
+      "    healthcheck:",
+      "      test: ['CMD', 'pg_isready', '-U', 'postgres']",
+      "      interval: 30s",
+      "      retries: 3"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Configure logging for app and db services",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    logging:",
+      "      driver: 'json-file'",
+      "      options:",
+      "        max-size: '10m'",
+      "        max-file: '3'",
+      "  db:",
+      "    image: postgres",
+      "    logging:",
+      "      driver: 'json-file'",
+      "      options:",
+      "        max-size: '10m'",
+      "        max-file: '3'"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    logging:",
+      "      driver: 'json-file'",
+      "      options:",
+      "        max-size: '10m'",
+      "        max-file: '3'",
+      "  db:",
+      "    image: postgres",
+      "    logging:",
+      "      driver: 'json-file'",
+      "      options:",
+      "        max-size: '10m'",
+      "        max-file: '3'"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Define a multi-container service with dependency on another service",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    depends_on:",
+      "      - db",
+      "    networks:",
+      "      - my-network",
+      "  db:",
+      "    image: postgres",
+      "    networks:",
+      "      - my-network",
+      "networks:",
+      "  my-network:"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    depends_on:",
+      "      - db",
+      "    networks:",
+      "      - my-network",
+      "  db:",
+      "    image: postgres",
+      "    networks:",
+      "      - my-network",
+      "networks:",
+      "  my-network:"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Define a custom health check command for the app service and set retries",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    healthcheck:",
+      "      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']",
+      "      retries: 5"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    healthcheck:",
+      "      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']",
+      "      retries: 5"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Use `docker-compose.override.yml` for development settings",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - NODE_ENV=development"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - NODE_ENV=development"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Run a cron job in a service using `entrypoint`",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    entrypoint: ['sh', '-c', 'cron && tail -f /dev/null']"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    entrypoint: ['sh', '-c', 'cron && tail -f /dev/null']"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Configure a service with secrets from Docker Swarm",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    secrets:",
+      "      - my_secret"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    secrets:",
+      "      - my_secret",
+      "secrets:",
+      "  my_secret:",
+      "    external: true"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Set up a reverse proxy with Traefik for your services",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    labels:",
+      "      - 'traefik.enable=true'",
+      "      - 'traefik.http.routers.app.rule=Host(`localhost`)'",
+      "  reverse-proxy:",
+      "    image: traefik:v2.5",
+      "    command:",
+      "      - '--api.insecure=true'",
+      "      - '--providers.docker=true'",
+      "    ports:",
+      "      - '8080:8080'",
+      "      - '80:80'"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    labels:",
+      "      - 'traefik.enable=true'",
+      "      - 'traefik.http.routers.app.rule=Host(`localhost`)'",
+      "  reverse-proxy:",
+      "    image: traefik:v2.5",
+      "    command:",
+      "      - '--api.insecure=true'",
+      "      - '--providers.docker=true'",
+      "    ports:",
+      "      - '8080:8080'",
+      "      - '80:80'"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Use Docker Compose with multi-cloud services (e.g., AWS ECS or GCP GKE)",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    deploy:",
+      "      replicas: 3",
+      "      resources:",
+      "        limits:",
+      "          cpus: '0.5'",
+      "          memory: '512M'",
+      "    environment:",
+      "      - AWS_ACCESS_KEY_ID=xxx",
+      "      - AWS_SECRET_ACCESS_KEY=xxx"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    deploy:",
+      "      replicas: 3",
+      "      resources:",
+      "        limits:",
+      "          cpus: '0.5'",
+      "          memory: '512M'",
+      "    environment:",
+      "      - AWS_ACCESS_KEY_ID=xxx",
+      "      - AWS_SECRET_ACCESS_KEY=xxx"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Set up a CI/CD pipeline using Docker Compose and GitLab CI",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - CI=true"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - CI=true",
+      "ci-cd-pipeline:",
+      "  image: gitlab/gitlab-runner",
+      "  environment:",
+      "    - GITLAB_CI=true"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Use Docker Compose to deploy a Redis service for caching",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "  redis:",
+      "    image: redis"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - REDIS_HOST=redis",
+      "  redis:",
+      "    image: redis"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Configure a load balancer with HAProxy for multiple app instances",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    deploy:",
+      "      replicas: 3",
+      "  haproxy:",
+      "    image: haproxy:latest",
+      "    ports:",
+      "      - '80:80'"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    deploy:",
+      "      replicas: 3",
+      "  haproxy:",
+      "    image: haproxy:latest",
+      "    ports:",
+      "      - '80:80'",
+      "    environment:",
+      "      - 'backend=app'"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Deploy a multi-tier application with separate front-end and back-end services",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  frontend:",
+      "    image: react-app",
+      "  backend:",
+      "    image: node-app"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  frontend:",
+      "    image: react-app",
+      "    environment:",
+      "      - BACKEND_URL=http://backend:3000",
+      "  backend:",
+      "    image: node-app",
+      "    environment:",
+      "      - DB_HOST=db"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Use Docker Compose with Kubernetes integration for production deployment",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    deploy:",
+      "      replicas: 3",
+      "    kubernetes:",
+      "      namespace: production"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Set up a persistent storage volume for PostgreSQL service",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  db:",
+      "    image: postgres",
+      "    volumes:",
+      "      - ./db-data:/var/lib/postgresql/data"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  db:",
+      "    image: postgres",
+      "    volumes:",
+      "      - ./db-data:/var/lib/postgresql/data",
+      "    environment:",
+      "      - POSTGRES_PASSWORD=mysecretpassword"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Configure a reverse proxy with NGINX to route traffic to the correct app services",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "  reverse-proxy:",
+      "    image: nginx"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "  reverse-proxy:",
+      "    image: nginx",
+      "    volumes:",
+      "      - ./nginx.conf:/etc/nginx/nginx.conf"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Use a private Docker registry to store and pull images for your services",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: myregistry.com/my-app",
+      "  db:",
+      "    image: myregistry.com/my-db"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: myregistry.com/my-app",
+      "    build: ./app",
+      "  db:",
+      "    image: myregistry.com/my-db",
+      "    build: ./db"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Use Docker Compose with multi-cloud services (e.g., AWS S3 for storage)",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - AWS_S3_BUCKET=mybucket"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    environment:",
+      "      - AWS_S3_BUCKET=mybucket",
+      "      - AWS_ACCESS_KEY_ID=xxx",
+      "      - AWS_SECRET_ACCESS_KEY=xxx"
+    ]
+  },
+  {
+    "type": "docker-compose.yml",
+    "description": "Integrate a logging service with Fluentd for collecting logs from multiple containers",
+    "lines": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    logging:",
+      "      driver: 'fluentd'",
+      "  fluentd:",
+      "    image: fluent/fluentd"
+    ],
+    "solution": [
+      "version: '3.9'",
+      "services:",
+      "  app:",
+      "    image: node-app",
+      "    logging:",
+      "      driver: 'fluentd'",
+      "      options:",
+      "        fluentd-address: fluentd:24224",
+      "  fluentd:",
+      "    image: fluent/fluentd",
+      "    ports:",
+      "      - '24224:24224'"
+    ]
+  }  
 ]
