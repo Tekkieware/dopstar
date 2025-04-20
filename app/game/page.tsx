@@ -49,7 +49,8 @@ interface SortableItemProps {
 }
 
 function SortableItem({ id, index, moveItemUp, moveItemDown, itemsLength }: SortableItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+  const itemId = `${id}-${index}`
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id:itemId })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -65,7 +66,7 @@ function SortableItem({ id, index, moveItemUp, moveItemDown, itemsLength }: Sort
         ${isDragging ? "bg-blue-100 dark:bg-blue-900 shadow-lg" : "bg-gray-100 dark:bg-gray-700"} 
         border border-gray-300 dark:border-gray-600`}
     >
-      <div className="flex-grow">{id}</div>
+      <pre className="flex-grow">{id}</pre>
       <div className="flex items-center">
         <div className="flex items-center space-x-1 mr-2">
           <button
@@ -213,13 +214,16 @@ export default function GamePage() {
 
     if (over && active.id !== over.id) {
       setItems((items) => {
-        const oldIndex = items.indexOf(active.id.toString())
-        const newIndex = items.indexOf(over.id.toString())
+        const activeIdParts = active.id.toString().split("-")
+        const overIdParts = over.id.toString().split("-")
+        const oldIndex = Number.parseInt(activeIdParts[activeIdParts.length - 1])
+        const newIndex = Number.parseInt(overIdParts[overIdParts.length - 1])
 
         return arrayMove(items, oldIndex, newIndex)
       })
     }
   }
+
 
   const checkAnswer = () => {
     // Update attempts for this stage
@@ -446,11 +450,11 @@ export default function GamePage() {
         {/* Fixed height container with scrolling for long content */}
         <div className="max-h-[400px] overflow-y-auto pr-2">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={items} strategy={verticalListSortingStrategy}>
+            <SortableContext items={items.map((item, index) => `${item}-${index}`)} strategy={verticalListSortingStrategy}>
               <div className="space-y-2">
                 {items.map((item, index) => (
                   <SortableItem
-                    key={`${item}-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`}
+                    key={`${item}-${index}`}
                     id={item}
                     index={index}
                     moveItemUp={moveItemUp}
