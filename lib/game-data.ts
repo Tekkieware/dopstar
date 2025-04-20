@@ -2,6 +2,56 @@ import { Stage } from "./types";
 
 export const stages: Stage[] = [
   {
+    type: "Dockerfile",
+    description: "Arrange the Dockerfile for a simple Node.js application",
+    lines: [
+      "EXPOSE 3000",
+      "FROM node:18-alpine",
+      "WORKDIR /app",
+      "RUN npm install",
+      "COPY package*.json ./",
+      "COPY . .",
+      'CMD ["npm", "start"]',
+    ],
+    solution: [
+      "FROM node:18-alpine",
+      "WORKDIR /app",
+      "COPY package*.json ./",
+      "RUN npm install",
+      "COPY . .",
+      "EXPOSE 3000",
+      'CMD ["npm", "start"]',
+    ],
+  },
+  {
+    type: "Dockerfile",
+    description: "Arrange the multi-stage Dockerfile for a React application",
+    lines: [
+      "FROM node:18-alpine as build",
+      "COPY --from=build /app/build /usr/share/nginx/html",
+      "WORKDIR /app",
+      "RUN npm run build",
+      "FROM nginx:alpine",
+      "COPY . .",
+      "EXPOSE 80",
+      "COPY package*.json ./",
+      "RUN npm install",
+      'CMD ["nginx", "-g", "daemon off;"]',
+    ],
+    solution: [
+      "FROM node:18-alpine as build",
+      "WORKDIR /app",
+      "COPY package*.json ./",
+      "RUN npm install",
+      "COPY . .",
+      "RUN npm run build",
+      "FROM nginx:alpine",
+      "COPY --from=build /app/build /usr/share/nginx/html",
+      "EXPOSE 80",
+      'CMD ["nginx", "-g", "daemon off;"]',
+    ],
+  },
+  {
     type: "docker-compose.yml",
     description: "Arrange the docker-compose.yml file for a web app with a database",
     lines: [

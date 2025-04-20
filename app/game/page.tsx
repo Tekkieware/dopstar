@@ -32,6 +32,9 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { useDopStarStore } from "@/lib/store/useDopStarStore"
+import { playerData } from "@/lib/types"
+import { HighScore } from "@/lib/utils"
 
 interface StagePerformance {
   stageNumber: number
@@ -50,7 +53,7 @@ interface SortableItemProps {
 
 function SortableItem({ id, index, moveItemUp, moveItemDown, itemsLength }: SortableItemProps) {
   const itemId = `${id}-${index}`
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id:itemId })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: itemId })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -118,6 +121,8 @@ export default function GamePage() {
   const [totalScore, setTotalScore] = useState(0)
   const [madeLeaderboard, setMadeLeaderboard] = useState(false)
 
+  const { leaderboard, fetchLeaderboard, isLoadingLeaderboard } = useDopStarStore()
+
   // Set up DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -131,6 +136,9 @@ export default function GamePage() {
   )
 
   useEffect(() => {
+    if (currentStage === 0) {
+      fetchLeaderboard()
+    }
     if (currentStage < stages.length) {
       // Shuffle the items for the current stage
       setItems([...stages[currentStage].lines].sort(() => Math.random() - 0.5))
@@ -264,8 +272,7 @@ export default function GamePage() {
         setTimerRunning(false)
 
         // Check if score would make the leaderboard (compare with lowest score in mock data)
-        const wouldMakeLeaderboard = newTotalScore > 200 // Using the lowest score from our mock data
-        setMadeLeaderboard(wouldMakeLeaderboard)
+        setMadeLeaderboard(HighScore(newTotalScore,leaderboard))
 
         setShowModal(true)
       }
@@ -282,8 +289,7 @@ export default function GamePage() {
         setTimerRunning(false)
 
         // Check if score would make the leaderboard
-        const wouldMakeLeaderboard = totalScore > 200 // Using the lowest score from our mock data
-        setMadeLeaderboard(wouldMakeLeaderboard)
+        setMadeLeaderboard(HighScore(totalScore,leaderboard))
 
         // Show game over modal
         setShowGameOverModal(true)
@@ -303,10 +309,23 @@ export default function GamePage() {
       setTimerRunning(false)
 
       // Check if score would make the leaderboard
-      const wouldMakeLeaderboard = totalScore > 200 // Using the lowest score from our mock data
-      setMadeLeaderboard(wouldMakeLeaderboard)
+      setMadeLeaderboard(HighScore(totalScore,leaderboard))
 
       setShowModal(true)
+    }
+  }
+
+  async function saveToLeaderBoard(entry: playerData) {
+    try {
+      const res = await fetch('/api/leaderboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry),
+      });
+
+      const updated = await res.json();
+    } catch (err) {
+      console.error('Failed to save leaderboard score:', err);
     }
   }
 
@@ -315,26 +334,20 @@ export default function GamePage() {
     const secs = seconds % 60
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
-
   const handleNameSubmit = (name: string) => {
     // Store the player data in localStorage
     const playerData = {
       name: name || "Anonymous",
       score: totalScore,
-      time: formatTime(gameTime),
-      date: new Date().toISOString().split("T")[0],
-      id: Date.now(),
+      time: formatTime(gameTime)
     }
 
-    // Save to localStorage
-    localStorage.setItem("newLeaderboardEntry", JSON.stringify(playerData))
-
-    // Close modals
-    setShowModal(false)
-    setShowGameOverModal(false)
-
-    // Navigate to leaderboard without query params
-    router.push("/leaderboard")
+    saveToLeaderBoard(playerData).then(() => {
+      localStorage.setItem("newLeaderboardEntry", JSON.stringify(playerData))
+      setShowModal(false)
+      setShowGameOverModal(false)
+      router.push("/leaderboard")
+    })
   }
 
   const resetGame = () => {
@@ -479,9 +492,8 @@ export default function GamePage() {
           whileTap={{ scale: 0.95 }}
           onClick={checkAnswer}
           disabled={trials <= 0}
-          className={`px-6 py-3 rounded-full text-white flex items-center gap-2 ${
-            trials <= 0 ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed" : "bg-primary hover:bg-opacity-90"
-          } transition-all`}
+          className={`px-6 py-3 rounded-full text-white flex items-center gap-2 ${trials <= 0 ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed" : "bg-primary hover:bg-opacity-90"
+            } transition-all`}
         >
           Check My Answer
         </motion.button>

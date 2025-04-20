@@ -5,3 +5,17 @@ export interface Stage {
     solution: string[];
   };
   
+
+export interface playerData{
+  name: string ,
+  score: number,
+  time: string;
+  _id?: string,
+}
+
+
+export type dopStarState = {
+  leaderboard: playerData[];
+  isLoadingLeaderboard: boolean;
+  fetchLeaderboard: ()=> Promise<void>;
+};
