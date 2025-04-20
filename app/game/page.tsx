@@ -313,7 +313,7 @@ export default function GamePage() {
   }
 
   const handleNameSubmit = (name: string) => {
-    // Store the player data in localStorage instead of URL params
+    // Store the player data in localStorage
     const playerData = {
       name: name || "Anonymous",
       score: totalScore,
@@ -450,7 +450,7 @@ export default function GamePage() {
               <div className="space-y-2">
                 {items.map((item, index) => (
                   <SortableItem
-                    key={item}
+                    key={`${item}-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`}
                     id={item}
                     index={index}
                     moveItemUp={moveItemUp}

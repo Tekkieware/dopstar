@@ -1,4 +1,6 @@
-export const stages = [
+import { Stage } from "./types";
+
+export const stages: Stage[] = [
   {
     type: "Dockerfile",
     description: "Arrange the Dockerfile for a simple Node.js application",
