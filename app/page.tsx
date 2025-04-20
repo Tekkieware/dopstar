@@ -1,11 +1,10 @@
-"use client"
-
 import Link from "next/link"
 import { Container, Database, Layers, Play, Server, Terminal, Trophy } from "lucide-react"
 import { AnimatedCard } from "@/components/animated-card"
 import { CodeBlock } from "@/components/code-block"
 import { OrbitalVisualization } from "@/components/orbital-visualization"
 import ThemeToggle from "@/components/theme-toggle"
+import PlayButton from "@/components/play-button"
 
 export default function LandingPage() {
   return (
@@ -44,11 +43,11 @@ export default function LandingPage() {
             </span>
           </Link>
         </div>
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-2 md:gap-6">
           <Link href="/game" className="relative group flex items-center gap-1 px-3 py-1.5 overflow-hidden">
             <span className="absolute inset-0 w-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full transition-all duration-300 group-hover:w-full"></span>
             <Play className="h-4 w-4 text-primary group-hover:text-primary group-hover:rotate-12 transition-all duration-300" />
-            <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300 relative z-10">
+            <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300 relative z-10 hidden md:flex">
               Play
             </span>
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-purple-500 group-hover:w-full transition-all duration-300"></span>
@@ -56,7 +55,7 @@ export default function LandingPage() {
           <Link href="/leaderboard" className="relative group flex items-center gap-1 px-3 py-1.5 overflow-hidden">
             <span className="absolute inset-0 w-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full transition-all duration-300 group-hover:w-full"></span>
             <Trophy className="h-4 w-4 text-primary group-hover:text-primary group-hover:rotate-12 transition-all duration-300" />
-            <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300 relative z-10">
+            <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300 relative z-10 hidden md:flex">
               Leaderboard
             </span>
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-purple-500 group-hover:w-full transition-all duration-300"></span>
@@ -95,14 +94,8 @@ export default function LandingPage() {
           <div className="pt-8">
             <Link href="/game" className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full opacity-75 blur-md group-hover:opacity-100 transition duration-500"></div>
-              <button className="relative flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-purple-500 text-white font-bold py-4 px-10 rounded-full text-lg shadow-[0_5px_15px_rgba(89,51,146,0.4)] hover:shadow-[0_8px_25px_rgba(89,51,146,0.6)] transition-all duration-300 hover:-translate-y-1">
-                <span className="z-10 flex items-center">
-                  Start Game
-                  <Terminal className="ml-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
-                </span>
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary to-purple-500 rounded-full z-0"></span>
-                <span className="absolute inset-0 w-0 h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full transition-all duration-300 group-hover:w-full z-0"></span>
-              </button>
+           <PlayButton />
+
             </Link>
           </div>
         </div>
