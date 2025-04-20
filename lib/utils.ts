@@ -11,6 +11,7 @@ export const HighScore = (
   newScore: number,
   leaderboard: playerData[]
 ): boolean => {
+  if(newScore === 0) return false;
   if (leaderboard.length < 10) return true;
   const lowest = Math.min(...leaderboard.map((e) => e.score));
   return newScore > lowest;

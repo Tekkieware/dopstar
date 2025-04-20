@@ -11,6 +11,7 @@ export interface playerData{
   score: number,
   time: string;
   _id?: string,
+  createdAt?: string
 }
 
 

@@ -343,7 +343,6 @@ export default function GamePage() {
     }
 
     saveToLeaderBoard(playerData).then(() => {
-      localStorage.setItem("newLeaderboardEntry", JSON.stringify(playerData))
       setShowModal(false)
       setShowGameOverModal(false)
       router.push("/leaderboard")

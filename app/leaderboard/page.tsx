@@ -5,67 +5,16 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowLeft, Trophy, Home } from "lucide-react"
 import ThemeToggle from "@/components/theme-toggle"
+import { useDopStarStore } from "@/lib/store/useDopStarStore"
+import { formatDate } from "@/lib/utils"
 
-interface LeaderboardEntry {
-  id: number
-  name: string
-  time: string
-  score: number
-  date: string
-}
-
-// Mock data with scores between 200 and 400
-const mockLeaderboard: LeaderboardEntry[] = [
-  { id: 1, name: "DockerPro", time: "01:45", score: 400, date: "2025-03-10" },
-  { id: 2, name: "ContainerMaster", time: "02:12", score: 350, date: "2025-03-09" },
-  { id: 3, name: "Anonymous", time: "02:30", score: 300, date: "2025-03-08" },
-  { id: 4, name: "DevOpsGuru", time: "02:55", score: 250, date: "2025-03-07" },
-  { id: 5, name: "KubeWizard", time: "03:10", score: 200, date: "2025-03-06" },
-]
 
 export default function Leaderboard() {
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
-  const [newEntry, setNewEntry] = useState<LeaderboardEntry | null>(null)
-  const [isInitialized, setIsInitialized] = useState(false)
+  const {leaderboard, fetchLeaderboard, isLoadingLeaderboard} = useDopStarStore()
 
   useEffect(() => {
-    // Only run this once on component mount
-    if (!isInitialized) {
-      // Get the new entry from localStorage if it exists
-      const storedEntry = localStorage.getItem("newLeaderboardEntry")
-      let newPlayerEntry: LeaderboardEntry | null = null
-
-      if (storedEntry) {
-        try {
-          newPlayerEntry = JSON.parse(storedEntry) as LeaderboardEntry
-          // Clear the localStorage entry to prevent it from being used again on refresh
-          localStorage.removeItem("newLeaderboardEntry")
-        } catch (e) {
-          console.error("Error parsing leaderboard entry:", e)
-        }
-      }
-
-      // Create a copy of the mock data
-      let leaderboardData = [...mockLeaderboard]
-
-      // Add the new player if it exists
-      if (newPlayerEntry) {
-        leaderboardData.push(newPlayerEntry)
-        // Sort and limit to top 5
-        leaderboardData = leaderboardData.sort((a, b) => b.score - a.score).slice(0, 5)
-
-        // Check if the new entry made it to the leaderboard
-        const entryInLeaderboard = leaderboardData.find((entry) => entry.id === newPlayerEntry?.id)
-        if (entryInLeaderboard) {
-          setNewEntry(entryInLeaderboard)
-        }
-      }
-
-      // Set the leaderboard data
-      setLeaderboard(leaderboardData)
-      setIsInitialized(true)
-    }
-  }, [isInitialized])
+    fetchLeaderboard()
+  }, [])
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -96,16 +45,6 @@ export default function Leaderboard() {
           <Trophy className="text-yellow-500" size={28} />
           Top Performers
         </h1>
-        {newEntry && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="mt-2 text-primary font-medium"
-          >
-            Congratulations! You made it to the leaderboard!
-          </motion.p>
-        )}
       </motion.div>
 
       <motion.div
@@ -128,10 +67,8 @@ export default function Leaderboard() {
             <tbody>
               {leaderboard.map((entry, index) => (
                 <motion.tr
-                  key={entry.id}
-                  className={`border-t border-gray-200 dark:border-gray-700 ${
-                    entry.id === newEntry?.id ? "bg-primary bg-opacity-10 dark:bg-opacity-20" : ""
-                  }`}
+                  key={entry._id}
+                  className="border-t border-gray-200 dark:border-gray-700"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
@@ -150,15 +87,11 @@ export default function Leaderboard() {
                     </div>
                   </td>
                   <td className="py-4 px-4 font-medium">
-                    {entry.id === newEntry?.id ? (
-                      <span className="font-bold text-primary">{entry.name}</span>
-                    ) : (
-                      entry.name
-                    )}
+                     { entry.name}
                   </td>
                   <td className="py-4 px-4 font-bold">{entry.score}</td>
                   <td className="py-4 px-4">{entry.time}</td>
-                  <td className="py-4 px-4 text-gray-500 dark:text-gray-400">{entry.date}</td>
+                  <td className="py-4 px-4 text-gray-500 dark:text-gray-400">{formatDate(entry.createdAt!)}</td>
                 </motion.tr>
               ))}
             </tbody>
@@ -177,7 +110,7 @@ export default function Leaderboard() {
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full hover:bg-opacity-90 transition-all"
         >
           <ArrowLeft size={18} />
-          Play Again
+          Back to game
         </Link>
       </motion.div>
     </div>

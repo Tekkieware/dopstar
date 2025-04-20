@@ -7,13 +7,13 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
 
-    const { name, score, badges = [] } = await req.json();
+    const { name, score, time } = await req.json();
 
     const entry = new leaderboard({
       name,
       score,
+      time
     });
-
     await entry.save();
 
     return Response.json(entry);
