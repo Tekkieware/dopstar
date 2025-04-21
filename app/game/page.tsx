@@ -63,6 +63,7 @@ export default function GamePage() {
   const [score, setScore] = useState(0)
   const [totalScore, setTotalScore] = useState(0)
   const [madeLeaderboard, setMadeLeaderboard] = useState(false)
+  const [restart, setRestart] = useState(false)
 
   const { leaderboard, fetchLeaderboard, isLoadingLeaderboard } = useDopStarStore()
 
@@ -97,7 +98,7 @@ export default function GamePage() {
         setStageAttempts(newAttempts)
       }
     }
-  }, [currentStage])
+  }, [currentStage, restart])
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -301,6 +302,7 @@ export default function GamePage() {
     setStageAttempts([])
     setStageCompletionStatus([])
     setShowGameOverModal(false)
+    setRestart(true)
   }
 
   // Prepare stage performance data for the game over modal
@@ -429,7 +431,9 @@ export default function GamePage() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="mt-6 flex justify-center space-x-4"
       >
-        <motion.button
+        {
+          !stageCompletionStatus[currentStage] &&
+          <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={checkAnswer}
@@ -439,6 +443,8 @@ export default function GamePage() {
         >
           Check My Answer
         </motion.button>
+        }
+        
 
         {stageCompletionStatus[currentStage] && (
           <motion.button

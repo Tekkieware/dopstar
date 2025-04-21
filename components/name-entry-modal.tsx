@@ -30,12 +30,12 @@ export default function NameEntryModal({ time, score, onSubmit, onClose, madeLea
         exit={{ opacity: 0, scale: 0.9 }}
         className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-md w-full relative"
       >
-        <button
+        {/* <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
         >
           <X size={24} />
-        </button>
+        </button> */}
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <h2 className="text-2xl font-bold mb-4">{madeLeaderboard ? "🏆 Champion! 🏆" : "Game Complete! 🎉"}</h2>

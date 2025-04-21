@@ -47,12 +47,12 @@ export default function GameOverModal({
         exit={{ opacity: 0, scale: 0.9 }}
         className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-2xl w-full relative overflow-y-auto max-h-[90vh]"
       >
-        <button
+        {/* <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
         >
           <X size={24} />
-        </button>
+        </button> */}
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <div className="text-center mb-6">
@@ -170,7 +170,7 @@ export default function GameOverModal({
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={onTryAgain}
+              onClick={()=>onTryAgain()}
               className="px-6 py-3 bg-primary text-white rounded-md hover:bg-opacity-90"
             >
               Try Again
