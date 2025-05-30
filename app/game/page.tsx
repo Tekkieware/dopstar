@@ -34,6 +34,7 @@ import { useDopStarStore } from "@/lib/store/useDopStarStore"
 import { playerData } from "@/lib/types"
 import { HighScore } from "@/lib/utils"
 import SortableItem from "@/components/sortable-item"
+import Image from "next/image"
 
 interface StagePerformance {
   stageNumber: number
@@ -216,7 +217,7 @@ export default function GamePage() {
         setTimerRunning(false)
 
         // Check if score would make the leaderboard (compare with lowest score in mock data)
-        setMadeLeaderboard(HighScore(newTotalScore,leaderboard))
+        setMadeLeaderboard(HighScore(newTotalScore, leaderboard))
 
         setShowModal(true)
       }
@@ -233,7 +234,7 @@ export default function GamePage() {
         setTimerRunning(false)
 
         // Check if score would make the leaderboard
-        setMadeLeaderboard(HighScore(totalScore,leaderboard))
+        setMadeLeaderboard(HighScore(totalScore, leaderboard))
 
         // Show game over modal
         setShowGameOverModal(true)
@@ -253,7 +254,7 @@ export default function GamePage() {
       setTimerRunning(false)
 
       // Check if score would make the leaderboard
-      setMadeLeaderboard(HighScore(totalScore,leaderboard))
+      setMadeLeaderboard(HighScore(totalScore, leaderboard))
 
       setShowModal(true)
     }
@@ -362,15 +363,11 @@ export default function GamePage() {
 
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
-          >
-            <Home size={18} />
-            <span className="hidden sm:inline">Home</span>
+          <Link href="/">
+            <Image width={60} height={60} src={"./logo.png"} alt="D'Opstar Logo" title="D'Opstar Logo" />
           </Link>
           <Link href="/leaderboard" className="flex items-center gap-2 text-primary hover:underline">
-            <Trophy size={18} />
+            <ArrowRight size={18} />
             <span className="hidden sm:inline">Leaderboard</span>
           </Link>
         </div>
@@ -434,17 +431,17 @@ export default function GamePage() {
         {
           !stageCompletionStatus[currentStage] &&
           <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={checkAnswer}
-          disabled={trials <= 0}
-          className={`px-6 py-3 rounded-full text-white flex items-center gap-2 ${trials <= 0 ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed" : "bg-primary hover:bg-opacity-90"
-            } transition-all`}
-        >
-          Check My Answer
-        </motion.button>
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={checkAnswer}
+            disabled={trials <= 0}
+            className={`px-6 py-3 rounded-full text-white flex items-center gap-2 ${trials <= 0 ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed" : "bg-primary hover:bg-opacity-90"
+              } transition-all`}
+          >
+            Check My Answer
+          </motion.button>
         }
-        
+
 
         {stageCompletionStatus[currentStage] && (
           <motion.button

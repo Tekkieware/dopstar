@@ -5,6 +5,7 @@ import { CodeBlock } from "@/components/code-block"
 import { OrbitalVisualization } from "@/components/orbital-visualization"
 import ThemeToggle from "@/components/theme-toggle"
 import PlayButton from "@/components/play-button"
+import Image from "next/image"
 
 export default function LandingPage() {
   return (
@@ -31,18 +32,9 @@ export default function LandingPage() {
       </div>
 
       <header className="relative z-10 flex items-center justify-between p-6">
-        <div className="flex items-center gap-2 group">
-          <Container className="h-6 w-6 text-primary group-hover:rotate-12 transition-transform duration-300" />
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
-          >
-            <span className="font-mono text-xl font-bold tracking-tight relative">
-              d'Opstar
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
-            </span>
-          </Link>
-        </div>
+        <Link href="/">
+          <Image width={60} height={60} src={"./logo.png"} alt="D'Opstar Logo" title="D'Opstar Logo" />
+        </Link>
         <nav className="flex items-center gap-2 md:gap-6">
           <Link href="/game" className="relative group flex items-center gap-1 px-3 py-1.5 overflow-hidden">
             <span className="absolute inset-0 w-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full transition-all duration-300 group-hover:w-full"></span>
@@ -94,7 +86,7 @@ export default function LandingPage() {
           <div className="pt-8">
             <Link href="/game" className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full opacity-75 blur-md group-hover:opacity-100 transition duration-500"></div>
-           <PlayButton />
+              <PlayButton />
 
             </Link>
           </div>

@@ -7,10 +7,11 @@ import { ArrowLeft, Trophy, Home } from "lucide-react"
 import ThemeToggle from "@/components/theme-toggle"
 import { useDopStarStore } from "@/lib/store/useDopStarStore"
 import { formatDate } from "@/lib/utils"
+import Image from "next/image"
 
 
 export default function Leaderboard() {
-  const {leaderboard, fetchLeaderboard, isLoadingLeaderboard} = useDopStarStore()
+  const { leaderboard, fetchLeaderboard, isLoadingLeaderboard } = useDopStarStore()
 
   useEffect(() => {
     fetchLeaderboard()
@@ -20,12 +21,8 @@ export default function Leaderboard() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
-          >
-            <Home size={18} />
-            <span>Home</span>
+          <Link href="/">
+            <Image width={60} height={60} src={"./logo.png"} alt="D'Opstar Logo" title="D'Opstar Logo" />
           </Link>
           <Link href="/game" className="flex items-center gap-2 text-primary hover:underline">
             <ArrowLeft size={18} />
@@ -87,7 +84,7 @@ export default function Leaderboard() {
                     </div>
                   </td>
                   <td className="py-4 px-4 font-medium">
-                     { entry.name}
+                    {entry.name}
                   </td>
                   <td className="py-4 px-4 font-bold">{entry.score}</td>
                   <td className="py-4 px-4">{entry.time}</td>
