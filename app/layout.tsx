@@ -6,8 +6,8 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "D'opstar - Test Your DevOps Knowledge in a Fun-Filled Way",
-  description: "Dive into D'opstar, the ultimate DevOps-themed game that challenges your skills through engaging scenarios and fast-paced challenges. Perfect for engineers who love learning through play!",
+  title: "D'opstar - Test Your DevOps Knowledge with Docker, Kubernetes & Fun Challenges",
+  description: "Dive into D'opstar, the ultimate DevOps-themed game that challenges your skills with Docker, Docker Compose, Kubernetes, and more. Engage in fast-paced scenarios designed for engineers who love learning through play!"
 }
 
 
