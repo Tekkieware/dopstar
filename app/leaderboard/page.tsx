@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowLeft, Trophy, Home } from "lucide-react"
+import { ArrowLeft, Trophy, Home, Loader } from "lucide-react"
 import ThemeToggle from "@/components/theme-toggle"
 import { useDopStarStore } from "@/lib/store/useDopStarStore"
 import { formatDate } from "@/lib/utils"
@@ -16,6 +16,14 @@ export default function Leaderboard() {
   useEffect(() => {
     fetchLeaderboard()
   }, [])
+
+
+  if (isLoadingLeaderboard) {
+    return <div className="flex min-w-screen min-h-screen justify-center items-center flex-col gap-2">
+      <Loader size={30} color="#593392" className=" animate-spin" />
+      <p className=" text-primary font-semibold text-xs text-center">Generating leaderboard</p>
+    </div>
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
